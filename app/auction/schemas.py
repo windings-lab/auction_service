@@ -1,7 +1,7 @@
 from pydantic import BaseModel, Field, ConfigDict
 from typing import Annotated
 
-from app.models import LotStatus
+from .models import LotStatus
 
 
 class LotCreate(BaseModel):

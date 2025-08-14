@@ -1,12 +1,12 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ..models import LotStatus
-from ..services.auction_service import AuctionService
 from ..db import get_db
-from ..schemas import LotCreate, LotRead, BidCreate, BidRead
+from . import router
+from .services import AuctionService
+from .models import LotStatus
+from .schemas import LotCreate, LotRead, BidCreate, BidRead
 
-router = APIRouter(prefix="/lots", tags=["Auctions"])
 
 def get_auction_service(db: AsyncSession = Depends(get_db)) -> AuctionService:
     return AuctionService(db)

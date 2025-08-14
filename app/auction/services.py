@@ -5,9 +5,9 @@ from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
-from app.db import get_db
-from app.models import Lot, Bid, LotStatus
-from app.schemas import LotCreate, BidCreate
+from ..db import get_db
+from .models import LotStatus, Lot, Bid
+from .schemas import LotCreate, BidCreate
 
 
 class AuctionService:
