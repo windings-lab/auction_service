@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, status
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
@@ -22,12 +22,12 @@ class AuctionService:
         result = await self.db.execute(select(Lot).where(Lot.id == lot_id))
         lot = result.scalar_one_or_none()
         if not lot:
-            raise HTTPException(status_code=404, detail="Lot not found")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Lot not found")
         return lot
 
-    async def update_status(self, lot_id: int, status: LotStatus):
+    async def update_status(self, lot_id: int, lot_status: LotStatus):
         lot = await self.get_lot(lot_id)
-        lot.status = status
+        lot.status = lot_status
 
         await self.db.commit()
         await self.db.refresh(lot)
@@ -50,19 +50,19 @@ class AuctionService:
         )
         lot = result.unique().scalar_one_or_none()
         if not lot:
-            raise HTTPException(status_code=404, detail="Lot not found")
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Lot not found")
 
         # Prevent bids on finished lots
         if lot.status == LotStatus.finished:
             raise HTTPException(
-                status_code=400,
+                status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Cannot create a bid on a finished lot"
             )
 
         # Enforce bid > highest bid
         if bid_data.amount <= lot.highest_bid:
             raise HTTPException(
-                status_code=400,
+                status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Bid must be higher than current highest bid ({lot.highest_bid})",
             )
 
