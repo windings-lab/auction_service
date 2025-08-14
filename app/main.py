@@ -1,15 +1,16 @@
-from typing import Union
+from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
 
-app = FastAPI()
+from .db import engine, Base
 
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+@asynccontextmanager
+async def lifespan(in_app: FastAPI):
+    # Startup code: create tables
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    yield
+    # Shutdown code: nothing for now
 
-
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+app = FastAPI(lifespan=lifespan)
