@@ -13,12 +13,12 @@ services:
   app:
     build: .
     environment:
+      APP_SETTINGS: prod
       PGHOST: postgres
       PGPORT: 5432
       PGUSER: myuser
-      PGPASSWORD: mypassword
+      PGPASSWORD: admin
       PGDATABASE: db
-      PGSSLMODE: disable
     ports:
       - "8080:8080"
     depends_on:
