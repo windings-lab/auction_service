@@ -11,4 +11,5 @@ done
 echo "PostgreSQL is up - starting application"
 
 # Run your application command
+uv run alembic upgrade head
 uv run uvicorn app.main:app --host "0.0.0.0" --port "8080"

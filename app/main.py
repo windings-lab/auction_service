@@ -4,6 +4,7 @@ from fastapi import FastAPI
 
 from .db import engine
 from .models import Base
+from .routers.auction_router import router as auction_router
 
 
 @asynccontextmanager
@@ -15,3 +16,4 @@ async def lifespan(in_app: FastAPI):
     # Shutdown code: nothing for now
 
 app = FastAPI(lifespan=lifespan)
+app.include_router(auction_router)
