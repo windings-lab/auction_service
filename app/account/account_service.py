@@ -46,7 +46,7 @@ class AccountService(DBService):
         try:
             payload = jwt.decode(
                 token,
-                self.auth_context.secret_key,
+                self.auth_context.jwt_secret_key,
                 algorithms=[self.auth_context.cryptography_algorithm]
             )
             username = payload.get("sub")
