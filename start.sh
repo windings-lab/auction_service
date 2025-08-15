@@ -11,5 +11,5 @@ done
 echo "PostgreSQL is up - starting application"
 
 # Run your application command
-uv run alembic upgrade head
-uv run uvicorn app.main:fastapi_app --host "0.0.0.0" --port "8080"
+uv run --no-dev alembic upgrade head
+uv run --no-dev uvicorn app.main:fastapi_app --host "0.0.0.0" --port "8080"
