@@ -52,6 +52,7 @@ class AuctionService(DBService):
             title=lot_data.title,
             description=lot_data.description,
             starting_price=float(lot_data.starting_price),
+            highest_price=float(lot_data.starting_price),
         )
         self.db.add(lot)
         await self.db.commit()
@@ -68,10 +69,10 @@ class AuctionService(DBService):
 
     def _check_highest_bid(self, bid_data: schemas.BidCreate, lot: models.Lot):
         """Enforce bid > highest bid"""
-        if bid_data.amount <= lot.highest_bid:
+        if bid_data.amount <= lot.highest_price:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail=f"Bid must be higher than current highest bid ({lot.highest_bid})",
+                detail=f"Bid must be higher than current highest bid ({lot.highest_price})",
             )
 
     async def create_bid(self, lot_id: int, bid_data: schemas.BidCreate, user_data: app.account.schemas.UserOut) -> models.Bid:
@@ -86,7 +87,11 @@ class AuctionService(DBService):
             user_id=user_data.id,
         )
 
+        # Update highest price
+        lot.highest_price = bid.amount
+
         self.db.add(bid)
+        self.db.add(lot)
         try:
             await self.db.commit()
         except exc.IntegrityError as e:
@@ -102,13 +107,13 @@ class AuctionService(DBService):
 
         await self.db.refresh(bid, attribute_names=["lot"])
         self._check_lot_finished(bid.lot)
-
-        await self.db.refresh(bid.lot, attribute_names=["bids"]) # for checking highest bid
         self._check_highest_bid(bid_data, bid.lot)
 
-        # Update the bid amount
+        # Update the bid amount and lot highest price
         bid.amount = float(bid_data.amount)
+        bid.lot.highest_price = bid.amount
 
+        self.db.add(bid.lot)
         self.db.add(bid)
         await self.db.commit()
         await self.db.refresh(bid)

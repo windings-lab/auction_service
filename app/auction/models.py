@@ -18,6 +18,7 @@ class Lot(model.Base):
     title: Mapped[str] = mapped_column(String(255))
     description: Mapped[str] = mapped_column(String(1024))
     starting_price: Mapped[float] = mapped_column(Float)
+    highest_price: Mapped[float] = mapped_column(Float, nullable=False, server_default="0")
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
     status: Mapped[LotStatus] = mapped_column(
         SAEnum(LotStatus, native_enum=False),
@@ -31,12 +32,6 @@ class Lot(model.Base):
         cascade="all, delete-orphan"
     )
 
-    @property
-    def highest_bid(self) -> float:
-        """Return the highest bid or starting_price if no bids yet"""
-        if not self.bids:
-            return self.starting_price
-        return max(b.amount for b in self.bids)
 
 class Bid(model.Base):
     __tablename__ = "bids"
