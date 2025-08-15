@@ -3,8 +3,8 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from .db import engine, Base
-import models # import all models to register them
-import auction
+import app.models # import all models to register them
+from app.auction.routers import router as auction_router
 
 
 @asynccontextmanager
@@ -15,5 +15,5 @@ async def lifespan(in_app: FastAPI):
     yield
     # Shutdown code: nothing for now
 
-fastapi = FastAPI(lifespan=lifespan)
-fastapi.include_router(auction.router)
+fastapi_app = FastAPI(lifespan=lifespan)
+fastapi_app.include_router(auction_router)
