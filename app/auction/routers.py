@@ -8,6 +8,8 @@ from app.db import get_db_session
 from . import models
 from . import schemas
 from .auction_service import AuctionService
+import app.account.schemas
+import app.account.routers
 
 router = APIRouter(prefix="/lots", tags=["Auctions"])
 
@@ -35,9 +37,19 @@ async def create_lot(
 async def create_bid(
     lot_id: int,
     bid: Annotated[schemas.BidCreate, Form()],
+    current_user: Annotated[app.account.schemas.UserOut, Depends(app.account.routers.get_current_user)],
     auction_service: Annotated[AuctionService, Depends(get_auction_service)],
 ):
-    return await auction_service.create_bid(lot_id, bid)
+    return await auction_service.create_bid(lot_id, bid, current_user)
+
+@router.patch("/{lot_id}/bids", status_code=status.HTTP_200_OK, response_model=schemas.BidRead)
+async def update_bid(
+    lot_id: int,
+    bid: Annotated[schemas.BidCreate, Form()],
+    current_user: Annotated[app.account.schemas.UserOut, Depends(app.account.routers.get_current_user)],
+    auction_service: Annotated[AuctionService, Depends(get_auction_service)],
+):
+    return await auction_service.update_bid(lot_id, bid, current_user)
 
 @router.get("", status_code=status.HTTP_200_OK, response_model=list[schemas.LotRead])
 async def get_lots(auction_service: Annotated[AuctionService, Depends(get_auction_service)]):
