@@ -10,6 +10,7 @@ from . import schemas
 from .auction_service import AuctionService
 import app.account.schemas
 import app.account.routers
+from .lot_websocket_manager import manager
 
 router = APIRouter(prefix="/lots", tags=["Auctions"])
 
@@ -24,6 +25,11 @@ async def update_lot_status(
     auction_service: Annotated[AuctionService, Depends(get_auction_service)],
 ):
     await auction_service.update_status(lot_id, lot_status)
+    await manager.broadcast(lot_id, {
+        "type": "lot_status_changed",
+        "lot_id": lot_id,
+        "status": lot_status
+    })
     return {"message": f"Lot {lot_id} status updated to {lot_status}"}
 
 @router.post("", status_code=status.HTTP_201_CREATED, response_model=schemas.LotRead)
@@ -40,7 +46,14 @@ async def create_bid(
     current_user: Annotated[app.account.schemas.UserOut, Depends(app.account.routers.get_current_user)],
     auction_service: Annotated[AuctionService, Depends(get_auction_service)],
 ):
-    return await auction_service.create_bid(lot_id, bid, current_user)
+    new_bid = await auction_service.create_bid(lot_id, bid, current_user)
+    await manager.broadcast(lot_id, {
+        "type": "bid_placed",
+        "lot_id": lot_id,
+        "bidder": current_user.username,
+        "amount": bid.amount
+    })
+    return new_bid
 
 @router.patch("/{lot_id}/bids", status_code=status.HTTP_200_OK, response_model=schemas.BidRead)
 async def update_bid(
@@ -49,7 +62,14 @@ async def update_bid(
     current_user: Annotated[app.account.schemas.UserOut, Depends(app.account.routers.get_current_user)],
     auction_service: Annotated[AuctionService, Depends(get_auction_service)],
 ):
-    return await auction_service.update_bid(lot_id, bid, current_user)
+    updated_bid = await auction_service.update_bid(lot_id, bid, current_user)
+    await manager.broadcast(lot_id, {
+        "type": "bid_placed",
+        "lot_id": lot_id,
+        "bidder": current_user.username,
+        "amount": bid.amount
+    })
+    return updated_bid
 
 @router.get("", status_code=status.HTTP_200_OK, response_model=list[schemas.LotRead])
 async def get_lots(auction_service: Annotated[AuctionService, Depends(get_auction_service)]):
