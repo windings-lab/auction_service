@@ -1,7 +1,6 @@
 from typing import AsyncGenerator, Any
 
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
-from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped
 
 from .config import settings
 
@@ -17,10 +16,6 @@ async_session = async_sessionmaker(
     autoflush=False
 )
 
-async def get_db() -> AsyncGenerator[AsyncSession | Any, Any]:
+async def get_db_session() -> AsyncGenerator[AsyncSession | Any, Any]:
     async with async_session() as session:
         yield session
-
-
-class Base(DeclarativeBase):
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)

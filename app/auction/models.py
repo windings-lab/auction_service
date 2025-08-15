@@ -4,14 +4,14 @@ from enum import Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Float, func, ForeignKey, Enum as SAEnum
 
-from ..db import Base
+from app import model
 
 
 class LotStatus(str, Enum):
     running = "running"
     finished = "finished"
 
-class Lot(Base):
+class Lot(model.Base):
     __tablename__ = "lots"
 
     title: Mapped[str] = mapped_column(String(255))
@@ -37,7 +37,7 @@ class Lot(Base):
             return self.starting_price
         return max(b.amount for b in self.bids)
 
-class Bid(Base):
+class Bid(model.Base):
     __tablename__ = "bids"
 
     lot_id: Mapped[int] = mapped_column(ForeignKey("lots.id", ondelete="CASCADE"))
