@@ -14,7 +14,6 @@ class LotStatus(str, Enum):
 class Lot(Base):
     __tablename__ = "lots"
 
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(String(255))
     description: Mapped[str] = mapped_column(String(1024))
     starting_price: Mapped[float] = mapped_column(Float)
@@ -41,7 +40,6 @@ class Lot(Base):
 class Bid(Base):
     __tablename__ = "bids"
 
-    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     lot_id: Mapped[int] = mapped_column(ForeignKey("lots.id", ondelete="CASCADE"))
     amount: Mapped[float] = mapped_column(Float)
     created_at: Mapped[datetime.datetime] = mapped_column(server_default=func.now())
