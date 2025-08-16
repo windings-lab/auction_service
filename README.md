@@ -27,6 +27,10 @@ A project for managing online auctions with support for bids and lot statuses.
 - [ ] Writing tests using pytest
 - [ ] Sending WebSocket messages to a Telegram bot
 - [ ] Configuring secure environment variables, e.g., password
+- [ ] Using Redis or RabbitMQ as a broker for Websocket
+- [ ] Using Redis for storing user sessions
+- [ ] Using Celery to execute Websocket Tasks
+- [ ] Websocket server refactored to be easier to scale
 
 ## Running the application (Dev)
 
