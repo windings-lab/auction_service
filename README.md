@@ -30,7 +30,7 @@ A project for managing online auctions with support for bids and lot statuses.
 - [ ] Using Redis or RabbitMQ as a broker for Websocket
 - [ ] Using Redis for storing user sessions
 - [ ] Using Celery to execute Websocket Tasks
-- [ ] Websocket server refactored to be easier to scale
+- [ ] Websocket server refactored to be easier to scale. Separate FastAPI code and WebSocket code
 
 ## Running the application (Dev)
 
