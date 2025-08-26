@@ -48,9 +48,22 @@ uv run uvicorn src.main:fastapi_app
 1. Make sure Docker Engine is running
 2. In the project root folder, run:
 
+PostgreSQL
 ```bash
-docker-compose up -d
+docker compose -f docker/docker-compose.yaml -f docker/docker-compose.override-postgres.yml up
 ```
+
+MySQL
+```bash
+docker compose -f docker/docker-compose.yaml -f docker/docker-compose.override-mysql.yml up
+```
+
+## Using ETL service
+
+1. Make sure app is running
+2. Open `<ip-address>:<port>/etl/`
+3. Input your data and make excel table in csv format
+4. Make sure that the first column in Excel is the column that you want to filter and extract
 
 ## Running the WebSocket client
 
