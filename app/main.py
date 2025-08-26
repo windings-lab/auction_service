@@ -16,6 +16,7 @@ async def lifespan(in_app: FastAPI):
         await conn.run_sync(app.model.Base.metadata.create_all)
     yield
     # Shutdown code: nothing for now
+    await engine.dispose()
 
 fastapi_app = FastAPI(lifespan=lifespan)
 fastapi_app.include_router(auction_router)
