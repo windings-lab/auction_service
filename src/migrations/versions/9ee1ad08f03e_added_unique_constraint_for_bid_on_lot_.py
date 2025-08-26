@@ -42,7 +42,7 @@ def upgrade() -> None:
 
         session.commit()
 
-        with op.batch_alter_table("bids", recreate="always") as batch_op:
+        with op.batch_alter_table("bids") as batch_op:
             batch_op.create_unique_constraint(
                 "uq_lot_user_bid", ["lot_id", "user_id"]
             )
@@ -52,5 +52,5 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     """Downgrade schema."""
-    with op.batch_alter_table("bids", recreate="always") as batch_op:
+    with op.batch_alter_table("bids") as batch_op:
         batch_op.drop_constraint("uq_lot_user_bid", type_="unique")

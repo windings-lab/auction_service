@@ -40,7 +40,7 @@ A project for managing online auctions with support for bids and lot statuses.
 
 ```bash
 uv sync
-uv run uvicorn app.main:fastapi_app
+uv run uvicorn src.main:fastapi_app
 ```
 
 ## Running the application (Docker)

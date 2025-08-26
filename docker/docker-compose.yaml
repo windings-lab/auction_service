@@ -1,39 +1,15 @@
 services:
-  postgres:
-    image: postgres:latest
-    profiles: ["postgres"]
-    environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: db
-    ports:
-      - "5432:5432"
-    volumes:
-      - dbdata:/var/lib/postgresql/data
-    networks:
-      default:
-        aliases:
-          - db
-
-  mysql:
-    image: mysql:latest
-    profiles: [ "mysql" ]
-    environment:
-      MYSQL_ROOT_PASSWORD: admin
-      MYSQL_DATABASE: db
-      MYSQL_USER: myuser
-      MYSQL_PASSWORD: admin
-    ports:
-      - "3306:3306"
-    volumes:
-      - dbdata:/var/lib/mysql
+  db:
+    # Placeholder, actual DB chosen in override
     networks:
       default:
         aliases:
           - db
 
   app:
-    build: .
+    build:
+      context: ..
+      dockerfile: ./docker/Dockerfile
     environment:
       APP_SETTINGS: prod
       DB_HOST: db
@@ -44,10 +20,6 @@ services:
       - "8080:8080"
     depends_on:
       - db
-    profiles: ["postgres", "mysql"]
-
-volumes:
-  dbdata:
 
 networks:
   default:

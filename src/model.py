@@ -26,4 +26,4 @@ def discover_and_import_top_level_packages(app_package_name: str):
             import_models_from_package(f"{app_package_name}.{name}")
 
 
-discover_and_import_top_level_packages("app")
+discover_and_import_top_level_packages("src")

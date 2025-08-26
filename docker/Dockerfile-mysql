@@ -1,0 +1,6 @@
+FROM mysql:8.4.6
+
+COPY ../mysql/my.cnf /etc/mysql/conf.d/my.cnf
+COPY ../mysql/init.sql /docker-entrypoint-initdb.d/init.sql
+
+RUN chmod 644 /etc/mysql/conf.d/my.cnf

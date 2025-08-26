@@ -20,7 +20,7 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     """Upgrade schema."""
-    with op.batch_alter_table("bids", recreate="always") as batch_op:
+    with op.batch_alter_table("bids") as batch_op:
         batch_op.add_column(sa.Column("user_id", sa.Integer(), nullable=False, server_default="1"))
         batch_op.create_foreign_key(
             "fk_bids_user_id_users",
@@ -37,6 +37,6 @@ def upgrade() -> None:
 
 def downgrade() -> None:
     """Downgrade schema."""
-    with op.batch_alter_table("bids", recreate="always") as batch_op:
+    with op.batch_alter_table("bids") as batch_op:
         batch_op.drop_constraint("fk_bids_user_id_users", type_="foreignkey")
         batch_op.drop_column("user_id")
