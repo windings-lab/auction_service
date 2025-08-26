@@ -4,9 +4,9 @@ from fastapi import APIRouter, Depends, status, Form
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.account import schemas
-from app.account.account_service import AccountService
-from app.db import get_db_session
+from src.account import schemas
+from src.account.account_service import AccountService
+from src.db import get_db_session
 
 router = APIRouter(prefix="/account", tags=["Accounts"])
 

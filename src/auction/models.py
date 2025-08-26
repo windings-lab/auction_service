@@ -4,8 +4,8 @@ from enum import Enum
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy import String, Float, func, ForeignKey, Enum as SAEnum, UniqueConstraint
 
-from app import model
-import app.account.models
+from src import model
+import src.account.models
 
 
 class LotStatus(str, Enum):
@@ -45,7 +45,7 @@ class Bid(model.Base):
         "Lot",
         back_populates="bids",
     )
-    user: Mapped["app.account.models.User"] = relationship("User")
+    user: Mapped["src.account.models.User"] = relationship("User")
 
     __table_args__ = (
         UniqueConstraint('lot_id', 'user_id', name='uq_lot_user_bid'),

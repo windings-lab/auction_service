@@ -4,7 +4,7 @@ from jwt import InvalidTokenError
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 
-from app.db_service import DBService
+from src.db_service import DBService
 
 from . import schemas
 from . import models

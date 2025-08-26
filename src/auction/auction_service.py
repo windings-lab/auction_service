@@ -4,11 +4,11 @@ from fastapi import HTTPException, status
 from sqlalchemy import select, exc
 from sqlalchemy.orm import joinedload
 
-from app.db_service import DBService
+from src.db_service import DBService
 
 from . import models
 from . import schemas
-import app.account.schemas
+import src.account.schemas
 
 
 class AuctionService(DBService):
@@ -26,7 +26,7 @@ class AuctionService(DBService):
 
         return lot
 
-    async def get_bid(self, lot_id: int, user_data: app.account.schemas.UserOut) -> models.Bid:
+    async def get_bid(self, lot_id: int, user_data: src.account.schemas.UserOut) -> models.Bid:
         result = await self.db.execute(
             select(models.Bid)
             .where(models.Bid.lot_id == lot_id, models.Bid.user_id == user_data.id)
@@ -75,7 +75,7 @@ class AuctionService(DBService):
                 detail=f"Bid must be higher than current highest bid ({lot.highest_price})",
             )
 
-    async def create_bid(self, lot_id: int, bid_data: schemas.BidCreate, user_data: app.account.schemas.UserOut) -> models.Bid:
+    async def create_bid(self, lot_id: int, bid_data: schemas.BidCreate, user_data: src.account.schemas.UserOut) -> models.Bid:
         lot = await self.get_lot(lot_id)
         self._check_lot_finished(lot)
         self._check_highest_bid(bid_data, lot)
@@ -102,7 +102,7 @@ class AuctionService(DBService):
         await self.db.refresh(bid)
         return bid
 
-    async def update_bid(self, lot_id: int, bid_data: schemas.BidCreate, user_data: app.account.schemas.UserOut):
+    async def update_bid(self, lot_id: int, bid_data: schemas.BidCreate, user_data: src.account.schemas.UserOut):
         bid = await self.get_bid(lot_id, user_data)
 
         await self.db.refresh(bid, attribute_names=["lot"])

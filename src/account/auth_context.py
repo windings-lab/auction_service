@@ -3,7 +3,7 @@ from datetime import datetime, timezone, timedelta
 import jwt
 from passlib.context import CryptContext
 
-from app.config import settings
+from src.config import settings
 
 
 class AuthContext:

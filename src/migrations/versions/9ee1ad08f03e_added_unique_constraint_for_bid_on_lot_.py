@@ -11,7 +11,7 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.orm import Session
 
-from app.auction.models import Bid
+from src.auction.models import Bid
 
 # revision identifiers, used by Alembic.
 revision: str = '9ee1ad08f03e'
