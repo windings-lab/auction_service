@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from fastapi import status, APIRouter, Form, Depends
+from fastapi import status, APIRouter, Form, Depends, WebSocket, WebSocketDisconnect
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.db import get_db_session
@@ -74,3 +74,13 @@ async def update_bid(
 @router.get("", status_code=status.HTTP_200_OK, response_model=list[schemas.LotRead])
 async def get_lots(auction_service: Annotated[AuctionService, Depends(get_auction_service)]):
     return await auction_service.get_lots()
+
+
+@router.websocket("/ws/lots/{lot_id}")
+async def lot_websocket_endpoint(websocket: WebSocket, lot_id: int):
+    await manager.connect(lot_id, websocket)
+    try:
+        while True:
+            await websocket.receive_text()
+    except WebSocketDisconnect:
+        manager.disconnect(lot_id, websocket)
