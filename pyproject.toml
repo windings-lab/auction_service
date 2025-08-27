@@ -4,13 +4,10 @@ version = "0.1.0"
 description = "Add your description here"
 requires-python = ">=3.13"
 dependencies = [
-    "aiomysql>=0.2.0",
     "alembic>=1.16.4",
-    "asyncpg>=0.30.0",
     "fastapi[standard]>=0.116.1",
     "pandas>=2.3.2",
     "passlib[bcrypt]>=1.7.4",
-    "psycopg[binary,pool]>=3.2.9",
     "pydantic-settings>=2.10.1",
     "pyjwt>=2.10.1",
     "sqlalchemy[asyncio]>=2.0.43",
@@ -21,4 +18,14 @@ dependencies = [
 dev = [
     "aiosqlite>=0.21.0",
     "pytest>=8.4.1",
+]
+mssql = [
+    "aioodbc>=0.5.0",
+]
+mysql = [
+    "aiomysql>=0.2.0",
+]
+postgres = [
+    "asyncpg>=0.30.0",
+    "psycopg[binary,pool]>=3.2.9",
 ]
