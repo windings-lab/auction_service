@@ -42,7 +42,7 @@ class ProdSettings(Settings):
 
         query = util.EMPTY_DICT
         if self.db_engine == "mssql":
-            driver = config.get("mssql", "driver")
+            driver = config.get("mssql", "driver", fallback=os.getenv("MSSQL_DRIVER", None))
             if not driver:
                 raise EnvironmentError("mssql driver variable not set. Specify in config.ini")
             query = {

@@ -32,14 +32,36 @@ A project for managing online auctions with support for bids and lot statuses.
 - [ ] Using Celery to execute Websocket Tasks
 - [ ] Websocket server refactored to be easier to scale. Separate FastAPI code and WebSocket code
 
-## Running the application (Dev)
+## Running the application (prod)
 
-1. Create a uv Python interpreter
-2. Make sure the required environment variables are set
-3. In the project root folder, run:
+1. Make sure uv installed in your system or use pip venv for installing uv 
+
+db_engine = mssql | postgres | mysql
 
 ```bash
+uv init # if uv installed system-wide
+uv venv # if uv installed system-wide
+uv sync --no-dev --group <db_engine>
+uv run alembic upgrade head
+uv run uvicorn src.main:fastapi_app
+```
+
+#### MSSQL
+
+1. Use ODBC Driver 18 for SQL Server
+2. Manually create a necessary database or use your database
+3. Create the necessary user or use your user
+4. Edit config.ini if needed
+
+## Running the application (Dev)
+
+1. Make sure uv installed in your system or use pip venv for installing uv 
+
+```bash
+uv init # if uv installed system-wide
+uv venv # if uv installed system-wide
 uv sync
+uv run alembic upgrade head
 uv run uvicorn src.main:fastapi_app
 ```
 
@@ -83,13 +105,16 @@ options:
 
 ## Environment variables
 
-| Variable                      | Description                                      | Values    | Default   |
-|-------------------------------|--------------------------------------------------|-----------|-----------|
-| `APP_SETTINGS`                | dev with SQLite or prod with PostgreSQL settings | dev, prod | dev       |
-| `PGHOST`                      | PostgreSQL host                                  |           | localhost |
-| `PGPORT`                      | PostgreSQL port                                  |           | 5432      |
-| `PGUSER`                      | PostgreSQL user                                  |           |           |
-| `PGPASSWORD`                  | PostgreSQL password                              |           |           |
-| `JWT_SECRET_KEY`              | Encoder key for JWT, use openssl rand -hex 32    |           |           |
-| `JWT_ALGORITHM`               | Encoder alghorithm type for JWT                  |           | HS256     |
-| `TOKEN_EXPIRATION_IN_MINUTES` | Expiration time for token                        |           | 30        |
+| Variable                      | Description                                                                              | Values    | Default                |
+|-------------------------------|------------------------------------------------------------------------------------------|-----------|------------------------|
+| `APP_SETTINGS`                | dev with SQLite or prod with PostgreSQL settings                                         | dev, prod | dev                    |
+| `DB_ENGINE`                   | Database engine to use                                                                   |           | Error if not specified |
+| `DB_NAME`                     | Database name                                                                            |           | db                     |
+| `DB_HOST`                     | Database host                                                                            |           | localhost              |
+| `DB_PORT`                     | Database port                                                                            |           | Based on Engine        |
+| `DB_USER`                     | Database user                                                                            |           | Error if not specified |
+| `DB_PASSWORD`                 | Database password                                                                        |           | Error if not specified |
+| `MSSQL_DRIVER`                | Microsoft SQL Driver to use. For now only compatible with ODBC Driver 18 for SQL Server  |           | Error if not specified |
+| `JWT_SECRET_KEY`              | Encoder key for JWT, use openssl rand -hex 32                                            |           | Error if not specified |
+| `JWT_ALGORITHM`               | Encoder alghorithm type for JWT                                                          |           | HS256                  |
+| `TOKEN_EXPIRATION_IN_MINUTES` | Expiration time for token                                                                |           | 30                     |
