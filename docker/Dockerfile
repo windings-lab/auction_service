@@ -6,9 +6,9 @@ WORKDIR /app
 
 COPY ../pyproject.toml ../uv.lock ./
 
-RUN pip install --no-cache-dir uv && uv sync --no-dev
+RUN pip install --no-cache-dir uv
 
-COPY ../alembic.ini ../start.sh ./
+COPY ../alembic.ini ../config.ini ../start.sh ./
 COPY ../src/ ./src
 
 RUN chmod +x start.sh

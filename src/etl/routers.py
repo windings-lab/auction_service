@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.inspection import inspect
 
-from ..db import get_db_session
+from ..db import get_db_session, engine
 from ..model import Base
 from .csv import read as csv_read
 
@@ -17,16 +17,28 @@ templates = Jinja2Templates(directory="templates")
 
 BATCH_SIZE = 1000
 
-def get_tables_and_columns() -> dict[str, list[str]]:
+
+async def get_tables_and_columns() -> dict[str, list[str]]:
     tables_info = {}
-    for table_class in Base.__subclasses__():
-        table_name = table_class.__tablename__
-        columns = [
-            col.name
-            for col in table_class.__table__.columns
-            if not col.foreign_keys
-        ]
-        tables_info[table_name] = columns
+
+    async with engine.connect() as conn:
+        table_names = await conn.run_sync(
+            lambda sync_conn: [
+                t for t in inspect(sync_conn).get_table_names()
+                if t != "alembic_version"  # exclude auto-generated Alembic table
+            ]
+        )
+
+        for table_name in table_names:
+            columns = await conn.run_sync(
+                lambda sync_conn: [
+                    col["name"]
+                    for col in inspect(sync_conn).get_columns(table_name)
+                    if not col.get("foreign_keys")
+                ]
+            )
+            tables_info[table_name] = columns
+
     return tables_info
 
 def model_to_dict(obj):
@@ -37,8 +49,11 @@ def model_to_dict(obj):
     return obj
 
 @router.get("/", response_class=HTMLResponse)
-async def index(request: Request):
-    tables_info = get_tables_and_columns()
+async def index(
+    request: Request,
+    db: Annotated[AsyncSession, Depends(get_db_session)]
+):
+    tables_info = await get_tables_and_columns()
     return templates.TemplateResponse("etl.html", {"request": request, "tables_info": tables_info})
 
 
@@ -49,7 +64,7 @@ async def extract_data(
     csv_file: Annotated[UploadFile, Form(...)],
     db: Annotated[AsyncSession, Depends(get_db_session)]
 ):
-    tables_info = get_tables_and_columns()
+    tables_info = await get_tables_and_columns()
     if table_name not in tables_info or filter_column not in tables_info[table_name]:
         return HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid table or column")
 

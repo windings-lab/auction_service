@@ -1,6 +1,10 @@
 import os
+import configparser
 
-env = os.getenv("APP_SETTINGS", "dev").lower()
+config = configparser.ConfigParser()
+config.read("config.ini")
+
+env = config.get("app", "settings", fallback=os.getenv("APP_SETTINGS", "dev").lower())
 
 settings = None
 

@@ -1,6 +1,8 @@
 import os
 
 from pydantic_settings import BaseSettings
+from sqlalchemy import URL
+
 
 class Settings(BaseSettings):
     # openssl rand -hex 32
@@ -9,5 +11,8 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = os.getenv("TOKEN_EXPIRATION_IN_MINUTES", 30)
 
     @property
-    def db_url(self) -> str:
-        return "sqlite+aiosqlite:///./dev.db"
+    def db_url(self) -> URL:
+        return URL.create(
+            drivername="sqlite+aiosqlite",
+            database="dev.db",
+        )
