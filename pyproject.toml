@@ -24,6 +24,7 @@ mssql = [
 ]
 mysql = [
     "aiomysql>=0.2.0",
+    "cryptography>=45.0.6",
 ]
 postgres = [
     "asyncpg>=0.30.0",

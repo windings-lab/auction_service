@@ -16,6 +16,9 @@ services:
   app:
     environment:
       DB_ENGINE: mysql
+    build:
+      args:
+        DB_ENGINE: mysql
 
 volumes:
   mysqldata:

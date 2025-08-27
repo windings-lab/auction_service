@@ -20,6 +20,5 @@ fi
 
 echo "Starting application"
 
-uv sync --no-dev --group "$DB_ENGINE"
 uv run --no-dev alembic upgrade head
 uv run --no-dev uvicorn src.main:fastapi_app --host "0.0.0.0" --port "8080"

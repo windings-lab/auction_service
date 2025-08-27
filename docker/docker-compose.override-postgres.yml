@@ -13,6 +13,9 @@ services:
   app:
     environment:
       DB_ENGINE: postgres
+    build:
+      args:
+        DB_ENGINE: postgres
 
 volumes:
   pgdata:

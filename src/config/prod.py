@@ -15,8 +15,8 @@ class ProdSettings(Settings):
     db_port: int = config.getint(
         "database", "port",
         fallback=int(os.getenv("DB_PORT") or (
-        5432 if os.getenv("DB_ENGINE") == "postgres"
-        else 3306 if os.getenv("DB_ENGINE") == "mysql"
+        5432 if db_engine == "postgres"
+        else 3306 if db_engine == "mysql"
         else 1433
     )))
 
@@ -49,6 +49,10 @@ class ProdSettings(Settings):
                 "driver": driver,
                 "Trusted_Connection": "yes",
                 "TrustServerCertificate": "yes",
+            }
+        if self.db_engine == "mysql":
+            query = {
+                "charset": "utf8mb4",
             }
         url = URL.create(
             drivername=drivername,
