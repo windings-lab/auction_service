@@ -11,9 +11,6 @@ from src.etl.routers import router as etl_router
 
 @asynccontextmanager
 async def lifespan(in_app: FastAPI):
-    # Startup code: create tables
-    async with engine.begin() as conn:
-        await conn.run_sync(src.model.Base.metadata.create_all)
     yield
     # Shutdown code: nothing for now
     await engine.dispose()
