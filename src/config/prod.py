@@ -47,9 +47,19 @@ class ProdSettings(Settings):
                 raise EnvironmentError("mssql driver variable not set. Specify in config.ini")
             query = {
                 "driver": driver,
-                "Trusted_Connection": "yes",
+                "Trusted_Connection": "no",
                 "TrustServerCertificate": "yes",
+                "UID": self.db_user,  # Add explicit UID
+                "PWD": self.db_password,  # Add explicit PWD
             }
+            return URL.create(
+                drivername=drivername,
+                host=self.db_host,
+                port=self.db_port,
+                database=self.db_name,
+                query=query,
+            )
+
         if self.db_engine == "mysql":
             query = {
                 "charset": "utf8mb4",
