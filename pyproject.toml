@@ -10,6 +10,7 @@ dependencies = [
     "passlib[bcrypt]>=1.7.4",
     "pydantic-settings>=2.10.1",
     "pyjwt>=2.10.1",
+    "python-multipart>=0.0.21",
     "sqlalchemy[asyncio]>=2.0.43",
     "uvicorn>=0.40.0",
     "websockets>=15.0.1",
