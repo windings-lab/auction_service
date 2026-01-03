@@ -4,14 +4,14 @@ from jwt import InvalidTokenError
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 
-from src.db_service import DBService
+from src.core.service import Service
 
 from . import schemas
 from . import models
 from .auth_context import AuthContext
 
 
-class AccountService(DBService):
+class AccountService(Service):
     """Thread-safe"""
     auth_context: AuthContext = AuthContext()
 

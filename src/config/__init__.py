@@ -1,20 +1,5 @@
-import os
-import configparser
+from src.config.base import Settings
 
-config = configparser.ConfigParser()
-config.read("config.ini")
-
-env = config.get("app", "settings", fallback=os.getenv("APP_SETTINGS", "dev").lower())
-
-settings = None
-
-if env == "dev":
-    from .dev import _dev_settings
-    settings = _dev_settings
-elif env == "prod":
-    from .prod import _prod_settings
-    settings = _prod_settings
-else:
-    raise EnvironmentError("APP_SETTINGS environment variable is not set")
+settings: Settings = Settings.create()
 
 __all__ = ["settings"]

@@ -6,13 +6,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.account import schemas
 from src.account.account_service import AccountService
-from src.db import get_db_session
+from src.core.db import get_session
 
 router = APIRouter(prefix="/account", tags=["Accounts"])
 
 __oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/account/token")
 
-def get_user_service(db: Annotated[AsyncSession, Depends(get_db_session)]):
+def get_user_service(db: Annotated[AsyncSession, Depends(get_session)]):
     return AccountService(db)
 
 @router.post("/token", status_code=status.HTTP_201_CREATED, response_model=schemas.Token)

@@ -4,14 +4,14 @@ from fastapi import HTTPException, status
 from sqlalchemy import select, exc
 from sqlalchemy.orm import joinedload
 
-from src.db_service import DBService
+from src.core.service import Service
 
 from . import models
 from . import schemas
 import src.account.schemas
 
 
-class AuctionService(DBService):
+class AuctionService(Service):
     async def get_lots(self) -> Sequence[models.Lot]:
         result = await self.db.execute(select(models.Lot))
         return result.scalars().all()

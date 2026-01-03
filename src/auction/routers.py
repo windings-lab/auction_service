@@ -3,18 +3,17 @@ from typing import Annotated
 from fastapi import status, APIRouter, Form, Depends, WebSocket, WebSocketDisconnect
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.db import get_db_session
-
 from . import models
 from . import schemas
 from .auction_service import AuctionService
 import src.account.schemas
 import src.account.routers
 from .lot_websocket_manager import manager
+from src.core.db import get_session
 
 router = APIRouter(prefix="/lots", tags=["Auctions"])
 
-def get_auction_service(db: Annotated[AsyncSession, Depends(get_db_session)]):
+def get_auction_service(db: Annotated[AsyncSession, Depends(get_session)]):
     return AuctionService(db)
 
 
@@ -78,7 +77,7 @@ async def get_lots(auction_service: Annotated[AuctionService, Depends(get_auctio
 
 @router.websocket("/ws/lots/{lot_id}")
 async def lot_websocket_endpoint(websocket: WebSocket, lot_id: int):
-    await manager.connect(lot_id, websocket)
+    await manager.db_connect(lot_id, websocket)
     try:
         while True:
             await websocket.receive_text()
