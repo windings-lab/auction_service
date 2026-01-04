@@ -1,11 +1,12 @@
-from typing import Sequence
+from typing import Sequence, Annotated
 
-from fastapi import HTTPException, status
+from fastapi import HTTPException, status, Depends
 from sqlalchemy import select, exc
 from sqlalchemy.orm import joinedload
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.core.service import Service
-
+from src.core.db import get_session
 from . import models
 from . import schemas
 import src.account.schemas
@@ -118,3 +119,7 @@ class AuctionService(Service):
         await self.db.commit()
         await self.db.refresh(bid)
         return bid
+
+
+def get_auction_service(db: Annotated[AsyncSession, Depends(get_session)]):
+    return AuctionService(db)

@@ -1,21 +1,15 @@
 from typing import Annotated
 
 from fastapi import status, APIRouter, Form, Depends, WebSocket, WebSocketDisconnect
-from sqlalchemy.ext.asyncio import AsyncSession
 
 from . import models
 from . import schemas
-from .auction_service import AuctionService
+from .auction_service import AuctionService, get_auction_service
 import src.account.schemas
 import src.account.routers
 from .lot_websocket_manager import manager
-from src.core.db import get_session
 
 router = APIRouter(prefix="/lots", tags=["Auctions"])
-
-def get_auction_service(db: Annotated[AsyncSession, Depends(get_session)]):
-    return AuctionService(db)
-
 
 @router.patch("/{lot_id}/status", status_code=status.HTTP_200_OK)
 async def update_lot_status(

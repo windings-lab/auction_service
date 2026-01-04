@@ -1,11 +1,15 @@
+from typing import Annotated
+
 import jwt
 from fastapi import HTTPException, status
 from jwt import InvalidTokenError
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
+from sqlalchemy.ext.asyncio import AsyncSession
+from fastapi import Depends, status
 
 from src.core.service import Service
-
+from src.core.db import get_session
 from . import schemas
 from . import models
 from .auth_context import AuthContext
@@ -80,3 +84,6 @@ class AccountService(Service):
         access_token = self.auth_context.create_access_token(payload={"sub": user.username})
 
         return schemas.Token(access_token=access_token, token_type="bearer")
+
+def get_account_service(db: Annotated[AsyncSession, Depends(get_session)]):
+    return AccountService(db)
