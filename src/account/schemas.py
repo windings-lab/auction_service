@@ -1,4 +1,4 @@
-from pydantic import BaseModel, ConfigDict, Field
+from pydantic import BaseModel, ConfigDict
 
 
 class Token(BaseModel):
@@ -14,7 +14,7 @@ class UserBase(BaseModel):
     username: str
 
 class UserCreateOrLogin(UserBase):
-    password: str = Field(..., json_schema_extra={"type": "password"})
+    password: str
 
 class UserOut(UserBase):
     id: int
