@@ -1,12 +1,10 @@
 from typing import Annotated
 
-import jwt
-from fastapi import HTTPException, status
+from fastapi import HTTPException, Depends, status
 from jwt import InvalidTokenError
 from sqlalchemy import select
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import Depends, status
 
 from src.core.service import Service
 from src.core.db import get_session
@@ -48,12 +46,8 @@ class AccountService(Service):
             headers={"WWW-Authenticate": "Bearer"},
         )
         try:
-            payload = jwt.decode(
-                token,
-                self.auth_context.jwt_secret_key,
-                algorithms=[self.auth_context.jwt_algorithm]
-            )
-            username = payload.get("sub")
+            decoded_data = self.auth_context.decode_token(token)
+            username = decoded_data.get("sub")
             if username is None:
                 raise credentials_exception
             token_data = schemas.TokenData(username=username)
