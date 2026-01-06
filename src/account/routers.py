@@ -8,7 +8,9 @@ from src.account.account_service import AccountService, get_account_service
 
 router = APIRouter(prefix="/account", tags=["Accounts"])
 
-__oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/account/token")
+__oauth2_scheme = OAuth2PasswordBearer(
+    tokenUrl="/account/token",
+)
 
 @router.post("/token", status_code=status.HTTP_201_CREATED, response_model=schemas.Token)
 async def login_for_access_token(

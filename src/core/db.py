@@ -24,6 +24,6 @@ async def db_connect():
         raise Exception(f"Failed to connect to the database: {str(e)}. API won't work correctly.")
 
 
-async def get_session(self) -> AsyncGenerator[AsyncSession | Any, Any]:
-    async with self.async_session() as session:
+async def get_session() -> AsyncGenerator[AsyncSession | Any, Any]:
+    async with async_session() as session:
         yield session
