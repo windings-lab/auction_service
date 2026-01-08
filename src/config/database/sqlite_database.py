@@ -4,8 +4,8 @@ from .base_database import BaseDatabase
 
 
 class SQLiteDatabase(BaseDatabase, engine="sqlite"):
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self):
+        super().__init__()
         self.driver_name = "sqlite+aiosqlite"
         self.db_name = "dev.db"
 

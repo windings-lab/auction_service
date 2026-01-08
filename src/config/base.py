@@ -8,8 +8,6 @@ from .database.base_database import BaseDatabase
 
 
 class Settings(BaseSettings):
-    _config: configparser.ConfigParser = PrivateAttr()
-
     # openssl rand -hex 32
     jwt_secret_key: str = os.getenv("JWT_SECRET_KEY", "dangerous_secret_key")
     jwt_algorithm: str = os.getenv("JWT_ALGORITHM", "HS256")
@@ -17,11 +15,10 @@ class Settings(BaseSettings):
 
     _database: BaseDatabase = PrivateAttr()
 
-    def __init__(self, config, *args, **kwargs):
+    def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self._config = config
-        self._database = BaseDatabase.create(self._config)
+        self._database = BaseDatabase.create()
 
     @property
     def database(self):
@@ -33,17 +30,14 @@ class Settings(BaseSettings):
 
     @staticmethod
     def create():
-        config = configparser.ConfigParser()
-        config.read("config.ini")
-
-        env = config.get("app", "settings", fallback=os.getenv("APP_SETTINGS", "dev").lower())
+        env = os.getenv("APP_SETTINGS", "dev").lower()
 
         if env == "dev":
             from .dev import DevSettings
-            return DevSettings(config, _env_file='.env', _env_file_encoding='utf-8')
+            return DevSettings(_env_file='.env', _env_file_encoding='utf-8')
         elif env == "prod":
             from .prod import ProdSettings
-            return ProdSettings(config)
+            return ProdSettings()
         else:
             raise EnvironmentError("APP_SETTINGS environment variable is not set")
 

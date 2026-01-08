@@ -4,8 +4,8 @@ from .base_database import BaseDatabase
 
 
 class PostgresDatabase(BaseDatabase, engine="postgres"):
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self):
+        super().__init__()
         self.driver_name = "postgresql+asyncpg"
         if self.db_port is None:
             self.db_port = 5432

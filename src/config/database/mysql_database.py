@@ -4,8 +4,8 @@ from .base_database import BaseDatabase
 
 
 class MySQLDatabase(BaseDatabase, engine="mysql"):
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self):
+        super().__init__()
         self.driver_name = "mysql+aiomysql"
         if self.db_port is None:
             self.db_port = 3306

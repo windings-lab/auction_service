@@ -10,12 +10,8 @@ services:
     build:
       context: ..
       dockerfile: ./docker/Dockerfile
-    environment:
-      APP_SETTINGS: prod
-      DB_HOST: db
-      DB_USER: myuser
-      DB_PASSWORD: admin
-      DB_NAME: db
+    env_file:
+      - ../.env
     ports:
       - "8080:8080"
     depends_on:

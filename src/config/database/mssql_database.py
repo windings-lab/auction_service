@@ -6,10 +6,10 @@ from .base_database import BaseDatabase
 
 
 class MSSQLDatabase(BaseDatabase, engine="mssql"):
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self):
+        super().__init__()
         self.driver_name = "mssql+aioodbc"
-        self.mssql_driver = config.get("mssql", "driver", fallback=os.getenv("MSSQL_DRIVER", None))
+        self.mssql_driver = os.getenv("MSSQL_DRIVER", None)
         if not self.mssql_driver:
             raise EnvironmentError("mssql driver variable not set. Specify in config.ini")
         if not self.db_port:
