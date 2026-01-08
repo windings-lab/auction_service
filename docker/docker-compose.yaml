@@ -10,12 +10,19 @@ services:
     build:
       context: ..
       dockerfile: ./docker/Dockerfile
+    healthcheck:
+      test: curl --fail http://localhost:8080/health || exit 1
+      interval: 2s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
     env_file:
       - ../.env
     ports:
       - "8080:8080"
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   web_server:
     build:
       context: ..
@@ -23,7 +30,8 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - app
+      app:
+        condition: service_healthy
 
 networks:
   default:

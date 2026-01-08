@@ -2,9 +2,15 @@ services:
   db:
     image: postgres:latest
     environment:
-      POSTGRES_USER: myuser
-      POSTGRES_PASSWORD: admin
-      POSTGRES_DB: db
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=admin
+      - POSTGRES_DB=db
+    healthcheck:
+      test: ["CMD-SHELL", "sh -c 'pg_isready -U myuser -d db'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
     ports:
       - "5432:5432"
     volumes:

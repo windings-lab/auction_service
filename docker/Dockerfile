@@ -1,4 +1,4 @@
-FROM python:3.14.2-slim-trixie
+FROM python:3.14.2-trixie
 COPY --from=ghcr.io/astral-sh/uv:0.9.21 /uv /uvx /bin/
 
 ARG DB_ENGINE=postgres
