@@ -20,7 +20,7 @@ COPY ../pyproject.toml ../uv.lock ./
 
 RUN uv sync --group "$DB_ENGINE"
 
-COPY ../alembic.ini ../config.ini ../start.sh ./
+COPY ../alembic.ini ../start.sh ./
 COPY ../src/ ./src
 
 RUN chmod +x start.sh

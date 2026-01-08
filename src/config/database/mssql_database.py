@@ -11,7 +11,7 @@ class MSSQLDatabase(BaseDatabase, engine="mssql"):
         self.driver_name = "mssql+aioodbc"
         self.mssql_driver = os.getenv("MSSQL_DRIVER", None)
         if not self.mssql_driver:
-            raise EnvironmentError("mssql driver variable not set. Specify in config.ini")
+            raise EnvironmentError("MSSQL_DRIVER variable is not set")
         if not self.db_port:
             self.db_port = 1433
 
